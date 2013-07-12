@@ -1,0 +1,671 @@
+// Copyright 2013 Frank Lin
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package usdoleta;
+
+option java_outer_classname = "Proto";
+
+enum ThreeWayBoolean {
+  YES = 1;
+  NO = 2;
+  N_A = 3;
+}
+
+enum WageTerm {
+  HOUR = 1;
+  WEEKLY = 2;
+  BIWEEKLY = 3;
+  MONTH = 4;
+  YEAR = 5;
+}
+
+enum EducationLevel {
+  NONE = 1;
+  HIGH_SCHOOL = 2;
+  ASSOCIATES = 3;
+  BACHELORS = 4;
+  MASTERS = 5;
+  DOCTORATE = 6;
+  OTHER = 7;
+}
+
+// U.S. Department of Labor Employment and Training Administration
+// Labor Condition Application for Permanent Employment Certification
+// ETA Form 9089
+message PermCase {
+
+  // Stores the filename or URL for the disclosed PERM case.
+  required string filename = 1;
+
+  // A. Refiling Instructions
+  message RefilingInstructions {
+    // Are you seeking to utilize the filing date from a previously submitted
+    // Application for Alien Employment Certification ( ETA 750)?
+    required bool answer = 1;
+
+    // 1-A. If Yes, enter the previous filing date
+    optional string previous_filing_date = 2;
+
+    // 1-B. Indicate the previous SWA or local office case number OR if
+    // not available, specify state where case was originally filed
+    optional string previous_case_info = 3;
+  }
+  optional RefilingInstructions refiling_instructions = 2;
+
+  // B. Schedule A or Sheepherder Information
+  message ScheduleAOrSheeperInfo {
+    // Is this application in support of a Schedule A or Sheepherder occupation?
+    required bool answer = 1 [default = true];
+
+    // If Yes, do NOT send this application to the Department of Labor. All
+    // applications in support of Schedule A or Sheepherder Occupations must be
+    // sent directly to the appropriate Department of Homeland Security Office.
+  }
+  optional ScheduleAOrSheeperInfo schedule_a_or_sheeper_info = 3;
+
+  // C. Employer Information (Headquarters or main office)
+  message EmployerInfo {
+    // 1. Employer's name
+    optional string employer_name = 1;
+
+    // 2. Address 1, Address 2
+    optional string address1 = 2;
+    optional string address2 = 3;
+
+    // 3. City, State/Province, Country, Postal code
+    optional string city = 4;
+    optional string state = 5;
+    optional string country = 6;
+    optional string postal_code = 7;
+
+    // 4. Phone Number, Extension
+    optional string phone_number = 8;
+    optional string extension = 9;
+
+    // 5. Number of employees
+    optional int64 num_employees = 10;
+
+    // 6. Year commenced business
+    optional int32 year_commenced = 11;
+
+    // 7. FEIN (Federal Employer Identification Number)
+    optional string fein = 12 [default = "redacted"];
+
+    // 8. NAICS code
+    optional int32 naics_code = 13;
+
+    // 9. Is the employer a closely held corporation, partnership, or sole
+    // proprietorship in which the alien has an ownership interest, or is there
+    // a familial relationship between the owners, stockholders, partners,
+    // corporate officers, incorporators, and the alien?
+    optional bool coi = 14;
+  }
+  optional EmployerInfo employer_info = 4;
+
+  // D. Employer Contact Information (This section must be filled out. This
+  // information must be different from the agent or attorney information listed
+  // in Section E)
+  message EmployerContactInfo{
+    // 1. Contact's Last Name, First Name, Middle Initial
+    optional string last_name = 1;
+    optional string first_name = 2;
+    optional string middle_initial = 3;
+
+    // 2. Address 1, Address 2
+    optional string address1 = 4;
+    optional string address2 = 5;
+
+    // 3. City, State/Province, Country, Postal code
+    optional string city = 6;
+    optional string state = 7;
+    optional string country = 8;
+    optional string postal_code = 9;
+
+    // 4. Phone Number
+    optional string phone_number = 10;
+
+    // 5. Email Address
+    optional string email_address = 11;
+  }
+  optional EmployerContactInfo employer_contact_info = 5;
+
+  // E. Agent or Attorney Information (If applicable)
+  message AgentInfo {
+    // 1. Contact's Last Name, First Name, Middle Initial
+    optional string last_name = 1;
+    optional string first_name = 2;
+    optional string middle_initial = 3;
+
+    // 2. Firm name
+    optional string firm_name = 4;
+
+    // 3. Firm FEIN
+    optional string firm_fein = 5 [default = 'redacted'];
+
+    // 4. Phone Number, Extension
+    optional string phone_number = 6;
+    optional string extension = 7;
+
+    // 5. Address 1, Address 2
+    optional string address1 = 8;
+    optional string address2 = 9;
+
+    // 6. City, State/Province, Country, Postal code
+    optional string city = 10;
+    optional string state = 11;
+    optional string country = 12;
+    optional string postal_code = 13;
+
+    // 7. Email Address
+    optional string email_address = 14;
+  }
+  optional AgentInfo agent_info = 6;
+
+  // F. Prevailing Wage Information (as proided by the State Workforce Agency)
+  message PrevailingWageInfo {
+    // 1. Prevailing wage tracking number (if applicable)
+    optional string tracking_num = 1;
+
+    // 2. SOC/O*NET (OES) code
+    optional string soc_oes_code = 2;
+
+    // 3. Occupation Title
+    optional string occupation_title = 3;
+
+    // 4. Skill Level
+    optional string skill_level = 4;
+
+    // 5. Prevailing Wage, Per
+    optional string wage = 5;
+    optional string per = 6;
+
+    // 6. Prevailing Wage Source
+    optional string source = 7;
+
+    // 6-A. If Other is indicated in question 6, specify
+    optional string source_other = 8;
+
+    // 7. Determination Date
+    optional string determination_date = 9;
+
+    // 8. Expiration Date
+    optional string expiration_date = 10;
+  }
+  optional PrevailingWageInfo prevailing_wage_info = 7;
+
+  // G. Wage Offer Information
+  message WageOfferInfo {
+    // 1. Offered Wage, Per
+    optional string offered_wage = 1;
+    optional string per = 2;
+  }
+  optional WageOfferInfo wage_offer_info = 8;
+
+  // H. Job Opportunity Information (Where work will be performed)
+  message JobOpportunityInfo {
+    // 1. Primary Worksite (where work is to be performed) Address 1, Address 2
+    optional string address1 = 1;
+    optional string address2 = 2;
+
+    // 2. City, State, Postal Code
+    optional string city = 3;
+    optional string state = 4;
+    optional string postal_code = 5;
+
+    // 3. Job Title
+    optional string job_title = 6;
+
+    // 4. Education: minimum level required
+    optional EducationLevel min_edu = 7;
+
+    // 4-A. If Other is indicated in question 4, specify the education required:
+    optional string min_edu_other = 8;
+
+    // 4-B. Major field of study
+    optional string major = 9;
+
+    // 5. Is training required in the job opportunity?
+    optional bool training_required = 10;
+
+    // 5-A. If Yes, number of months of training required:
+    optional int32 num_training_months = 11;
+
+    // 5-B. Indicate the field of training
+    optional string training_field = 12;
+
+    // 6. Is experience in the job offered required for the job?
+    optional bool exp_required = 13;
+
+    // 6-A. If Yes, number of months experience required:
+    optional int32 num_exp_months = 14;
+
+    // 7. Is there an alternate field of study that is acceptable?
+    optional bool alternative_field_acceptable = 15;
+
+    // 7-A. If Yes, specify the major field of study:
+    optional string alternative_major = 16;
+
+    // 8. Is there an alternate combination of education and experience that is
+    // acceptable?
+    optional bool alternative_edu_exp = 17;
+
+    // 8-A. If Yes, specify the alternate level of education required:
+    optional EducationLevel alternative_edu = 18;
+
+    // 8-B. If Other is indicated in question 8-A, Indicate the alternate level
+    // of education required:
+    optional string alternative_edu_other = 19;
+
+    // 8-C. If applicable, indicate the number of years experience acceptable
+    // in question 8:
+    optional int32 alternative_num_exp_years = 20;
+
+    // 9. Is a foreign educational equivalent acceptable?
+    optional bool foreign_edu_acceptable = 21;
+
+    // 10. Is experience in an alternate occupation acceptable?
+    optional bool alternative_exp_acceptable = 22;
+
+    // 10-A. If Yes, number of months experience in alternate occupation
+    // required:
+    optional int32 alternative_num_exp_months = 23;
+
+    // 10-B. Identify the job title of the acceptable alternate occupation:
+    optional string alternative_job_title_acceptable = 24;
+
+    // 11. Job Duties - If submitting by mail, add attachement if necessary.
+    // Job duties description must begin in this space.
+    optional string job_duties = 25;
+
+    // 12. Are the job opportunity's requirements normal for the occupation?
+    //
+    // If the answser to this question is No, the employer must be prepared to
+    // provide documentation demonstrating that the job requirements are
+    // supported by business necessity.
+    optional bool requirements_normal = 26;
+
+    // 13. Is knowledge of a foreign language required to perform the job
+    // duties?
+    //
+    // If the answer to this question is Yes, the employer must be prepared to
+    // provide documentation demonstrating that the language requirements are
+    // supported by business necessity.
+    optional bool foreign_language_required = 27;
+
+    // 14. Specific skills or other requirements - If submitting by mail, add
+    // attachment if neccessary. Skills description must begin in this space.
+    optional string specific_skills = 28;
+
+    // 15. Does this application involve a job opportunity that includes a
+    // combination of occupations?
+    optional bool combination_occupations_involved = 29;
+
+    // 16. Is the position identified in this application being offered to the
+    // alien identified in Section J?
+    optional bool offered_to_alien_in_perm = 30;
+
+    // 17. Does the job require the alien to live on the employer's premises?
+    optional bool live_on_premises_required = 31;
+
+    // 18. Is the application for a live-in household domestic service worker?
+    optional bool live_in_household_worker = 32;
+
+    // 18-A. If Yes, have the employer and the alien executed the required
+    // employment contract and has the employer provided a copy of the contract
+    // to the alien?
+    optional ThreeWayBoolean contract_executed = 33;
+  }
+  optional JobOpportunityInfo job_opportunity_info = 9;
+
+  // I. Recruitment Information
+  message RecruitmentInfo {
+    // a. Occupation type - all must complete this section.
+    // 1. Is this application for a professional occupation, other than a
+    // college or university teacher? Professional occupation are those for
+    // which a bachelor's degree (or equivalent) is nomally required.
+    optional bool professional_occupation = 1;
+
+    // 2. Is this application for a college or university teacher?
+    optional bool college_teacher = 2;
+
+    // If Yes, complete question 2-A and 2-B below.
+    // 2-A. Did you select the candidate using a competitve recruitment and
+    // selection process?
+    optional bool competitive_recruitment = 3;
+
+    // 2-B. did you use the basic recruitment process for professional
+    // occupations?
+    optional bool basic_recruitment = 4;
+
+    // b. Special Recruitment and Documentation Procedures for College and
+    // University Teachers - Complete only if the answer to question I.a.2-A
+    // is Yes.
+    // 3. Date alien selected:
+    optional string date_selected = 5;
+
+    // 4. Name and date of national professional journal in which advertisement
+    // was placed:
+    optional string ad_professional_journal_name = 6;
+
+    // 5. Specify additional recruitment information in this space. Add an
+    // attachment if necessary.
+    optional string additional_recruitment_info = 7;
+
+    // c. Professional/Non-Professional Information - Complete this section
+    // unless your answers to questions I.a.1 is No and I.2-B is Yes.
+    // 6. Start date for the SWA job order
+    optional string swa_start_date = 8;
+
+    // 7. End date for the SWA job order
+    optional string swa_end_date = 9;
+
+    // 8. Is there a Sunday edition of the newspaper in the area of intended
+    // employment?
+    optional bool sunday_newspaper_available = 10;
+
+    // 9. Name of newspaper (of general circulation) in which the first
+    // advertisement was placed:
+    optional string newspaper_first_ad = 11;
+
+    // 10. Date of first advertisement identified in question 9:
+    optional string date_first_ad = 12;
+
+    // 11. Name of newspaper or professional journal (if applicable) in which
+    // second advertisement was placed:
+    optional string name_second_ad = 13;
+    optional string newspaper_or_journal_second_ad = 14;
+
+    // 12. Date of second newspaper advertisement or date of publication of
+    // journal identified in question 11:
+    optional string date_second_ad = 15;
+
+    // d. Professional Recruitment Information Complete if the answer to
+    // question I.a.1 is YES or if the answer to I.a.2-B is YES. Complete at
+    // least 3 of the items.
+    // 13. Dates advertised at job fair
+    optional string date_job_fair = 16;
+
+    // 14. Dates of on-campus recruiting
+    optional string date_campus_recruiting = 17;
+
+    // 15. Dates posted on employer web site
+    optional string date_employer_web_posted = 18;
+
+    // 16. Dates advertised with trade or professional organization
+    optional string date_ad_professional_organzation = 19;
+
+    // 17. Dates listed with job search web site
+    optional string date_job_search_website = 20;
+
+    // 18. Dates listed with private employment firm
+    optional string date_private_employment_firm = 21;
+
+    // 19. Dates advertised with employee referral program
+    optional string date_employee_referral_program = 22;
+
+    // 20. Dates advertised with campus placement office
+    optional string date_campus_placement_office = 23;
+
+    // 21. Dates advertised with local or ethnic newspaper
+    optional string date_local_ethnic_newspaper = 24;
+
+    // 22. Dates advertised with radio or TV ads
+    optional string date_radio_tv_ads = 25;
+
+    // e. General Information - All must complete this section.
+    // 23. Has the employer received payment of any kind for the submission of
+    // this application?
+    optional bool employer_received_payment = 26;
+
+    // 23-A. If Yes, describe details of the payment including the amount, date
+    // and purpose of the payment:
+    optional string payment_details = 27;
+
+    // 24. Has the bargaining representative for workers in the occupation in
+    // which the alien will be employed been provided with notice of this filing
+    // at least 30 days but not more than 180 days before the date the
+    // application is filed?
+    optional ThreeWayBoolean bargaining_representative_notified = 28;
+
+    // 25. If there is no bargaining representative, has a notice of this filing
+    // been posted for 10 business days in a conspicuous location at the place
+    // of employment, ending at least 30 days before but not more than 180 days
+    // before the date the application is filed?
+    optional ThreeWayBoolean notice_of_filing_posted = 29;
+
+    // 26. Has the employer had a layoff in the area of intended employment in
+    // the occupation involved in this application or in a related occupation
+    // within the six months immediately preceding the filing of this
+    // application?
+    optional bool layoff = 30;
+
+    // 26-A. If Yes, were the laid off U.S. workers notified and considered for
+    // the job opportunity for which certification is sought?
+    optional ThreeWayBoolean laid_off_workers_considered = 31;
+  }
+  optional RecruitmentInfo recruitment_info = 10;
+
+  // J. Alien Information (This section must be filled out. This information
+  // must be different from the agent or attorney information listed in
+  // Section E).
+  message AlienInfo {
+    // 1. Alien's last name, first name, full middle name
+    optional string last_name = 1 [default = "redacted"];
+    optional string first_name = 2 [default = "redacted"];
+    optional string middle_name = 3 [default = "redacted"];
+
+    // Current address 1, address2
+    optional string address1 = 4 [default = "redacted"];
+    optional string address2 = 5 [default = "redacted"];
+
+    // 3. City, State/Province, Country, Postal Code
+    optional string city = 6;
+    optional string state = 7;
+    optional string country = 8;
+    optional string postal_code = 9;
+
+    // 4. Phone number of current residence
+    optional string phone_number = 10 [default = "redacted"];
+
+    // 5. Country of citizenship
+    optional string citizenship = 11;
+
+    // 6. Country of birth
+    optional string country_of_birth = 12;
+
+    // 7. Alien's date of birth
+    optional string date_of_birth = 13 [default = "redacted"];
+
+    // 8. Class of admission
+    optional string class_of_admission = 14;
+
+    // 9. Alien registration number (A#)
+    optional string a_number = 15 [default = "redacted"];
+
+    // 10. Alien admission number (I-94)
+    optional string i94_number = 16 [default = "redacted"];
+
+    // 11. Education: highest level achieved relevant to the requested
+    // occupation:
+    optional EducationLevel education_level = 17;
+
+    // 11-A. If Other indicated in question 11, specify
+    optional string education_level_other = 18;
+
+    // 12. Specify major field(s) of study
+    optional string major = 19;
+
+    // 13. Year relevant education completed
+    optional int32 year_education_completed = 20;
+
+    // 14. Institution where relevant education specified in question 11 was
+    // received
+    optional string institution = 21;
+
+    // 15. Address 1 of conferring institution, address 2
+    optional string inst_address1 = 22;
+    optional string inst_address2 = 23;
+
+    // 16. City, State/Province, Country, Postal Code
+    optional string inst_city = 24;
+    optional string inst_state = 25;
+    optional string inst_country = 26;
+    optional string inst_postal_code = 27;
+
+    // 17. Did the alien complete the training required for the requested job
+    // opportunity, as indicated in question H.5?
+    optional ThreeWayBoolean training_completed = 28;
+
+    // 18. Does the alien have the experience as required for the requested job
+    // opportunity indicated in question H.6?
+    optional ThreeWayBoolean has_exp = 29;
+
+    // 19. Does the alien possess the alternate combination of education and
+    // experience as indicated in question H.8?
+    optional ThreeWayBoolean has_edu_and_exp = 30;
+
+    // 20. Does the alien have the experience in an alternate occupation
+    // specified in question H.10?
+    optional ThreeWayBoolean has_alternative_exp = 31;
+
+    // 21. Did the alien gain any of the qualifying experience with the employer
+    // in a position substantially comparable to the job opportunity requested?
+    optional ThreeWayBoolean has_comparable_exp = 32;
+
+    // 22. Did the employer pay for any of the alien's education or training
+    // necessary to satisfy any of the employer's job requirements for this
+    // position?
+    optional bool employer_paid_edu = 33;
+
+    // 23. Is the alien currently employed by the petitioning employer?
+    optional bool currently_employed = 34;
+  }
+  optional AlienInfo alien_info = 11;
+
+  // K. Alien Work Experience
+  //
+  // List all jobs the alien has held during the past 3 years. Also list any
+  // other experience that qualifies the alien for the job opportunity for
+  // which the employer is seeking certification.
+  message AlienWorkExperience {
+    // NOTE: Every item in this section is redacted.
+  }
+  optional AlienWorkExperience alien_work_experience = 12;
+
+  // L. Alien Declaration
+  //
+  // I declare under penalty of perjury that Sections J and K are true and
+  // correct. I understand that to knowingly furnish false information in the
+  // preparation of this form and any supplement thereto or to aid, abet, or
+  // counsel another to do so is a federal offense punishable by a fine or
+  // imprisonment up to five years or both under 18 U.S.C. Sec. 2 and 1001.
+  // Other penalties apply as well to fraud or misuse of ETA immigration
+  // documents and to perjury with respect to such documents under 18 U.S.C.
+  // Sec. 1546 and 1621. In addition, I further declare under penalty of perjury
+  // that I intend to accept the position offered in Section H of this
+  // application if a labor certification is approved and I am granted a visa
+  // or an adjustment of status based on this application.
+  message AlienDeclaration {
+    // NOTE: Every item in this section is redacted.
+  }
+  optional AlienDeclaration alien_declaration = 13;
+
+  // M. Declaration of Preparer
+  message PreparerDeclaration {
+    // 1. Was the application completed by the employer? If No, you must
+    // complete this section.
+    optional bool prepared_by_employer = 1;
+
+    // I hereby certify that I have prepared this application at the direct
+    // request of the employer listed in Section C and that to the best of my
+    // knowledge the information contained herein is true and correct. I
+    // understand that to knowingly furnish false information in the preparation
+    // of this form and any supplement thereto or to aid, abet, or counsel
+    // another to do so is a federal offense punishable by a fine, imprisonment
+    // up to five years or both under 18 U.S.C. Sec. 2 and 1001. Other penalties
+    // apply as well to fraud or misuse of ETA immigration documents and to
+    // perjury with respect to such documents under 18 U.S.C. Sec. 1546 and
+    // 1621.
+    //
+    // 2. Preparer's last name, first name, middle initial
+    optional string last_name = 2;
+    optional string first_name = 3;
+    optional string middle_initial = 4;
+
+    // 3. Title
+    optional string title = 5;
+
+    // 4. E-mail address
+    optional string email = 6;
+
+    // 5. Signature, Date signed
+    optional bool signature = 7;
+    optional string date_signed = 8;
+
+    // Note - The signature and date signed do not have to be filled out when
+    // electronically submitting to the Department of Labor for processing, but
+    // must be complete when submitting by mail. If the application is submitted
+    // electronically, any resulting certification MUST be signed immediately
+    // upon receipt from DOL before it can be submitted to USCIS for final
+    // processing.
+  }
+  optional PreparerDeclaration preparer_declaration = 14;
+
+  // N. Employer Declaration
+  //
+  // By virtue of my signature below, I HEREBY CERTIFY the following conditions
+  // of employment: 1. The offered wage equals or exceeds the prevailing wage
+  // and I will pay at least the prevailing wage. 2. The wage is not based on
+  // commissions, bonuses or other incentives, unless I guarantees a wage paid
+  // on a weekly, bi-weekly, or monthly basis that equals or exceeds the
+  // prevailing wage. 3. I have enough funds available to pay the wage or
+  // salary offered the alien. 4. I will be able to place the alien on the
+  // payroll on or before the date of the alien's proposed entrance into the
+  // United States. 5. The job opportunity does not involve unlawful
+  // discrimination by race, creed, color, national origin, age, sex, religion,
+  // handicap, or citizenship. 6. The job opportunity is not: a. Vacant because
+  // the former occupant is on strike or is being locked out in the course of a
+  // labor dispute involving a work stoppage; or b. At issue in a labor dispute
+  // involving a work stoppage. 7. The job opportunity's terms, conditions, and
+  // occupational environment are not contrary to Federal, state or local law.
+  // 8. The job opportunity has been and is clearly open to any U.S. worker.
+  // 9. The U.S. workers who applied for the job opportunity were rejected for
+  // lawful job-related reasons. 10. The job opportunity is for full-time,
+  // permanent employment for an employer other than the alien. I hereby
+  // designate the agent or attorney identified in section E (if any) to
+  // represent me for the purpose of labor certification and, by virtue of my
+  // signature in Block 3 below, I take full responsibility for the accuracy of
+  // any representations made by my agent or attorney. I declare under penalty
+  // of perjury that I have read and reviewed this application and that to the
+  // best of my knowledge the information contained herein is true and accurate.
+  // I understand that to knowingly furnish false information in the preparation
+  // of this form and any supplement thereto or to aid, abet, or counsel another
+  // to do so is a federal offense punishable by a fine or imprisonment up to
+  // five years or both under 18 U.S.C. Sec. 2 and 1001. Other penalties apply
+  // as well to fraud or misuse of ETA immigration documents and to perjury with
+  // respect to such documents under 18 U.S.C. Sec 1546 and 1621.
+  message EmployerDeclaration {
+    // 1. Last name, First name, Middle initial
+    optional string last_name = 1;
+    optional string first_name = 2;
+    optional string middle_initial = 3;
+
+    // 2. Title
+    optional string title = 4;
+
+    // 3. Signature, Date signed
+    optional bool signature = 5;
+    optional string date_signed = 6;
+  }
+  optional EmployerDeclaration employer_declaration = 15;
+}
